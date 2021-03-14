@@ -1,0 +1,28 @@
+{
+  "name": "gulp-class",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.13.10",
+    "@babel/preset-env": "^7.13.10",
+    "@babel/register": "^7.13.8",
+    "gulp": "^4.0.2",
+    "gulp-cli": "^2.3.0",
+    "gulp-pug": "^4.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GitHubGW/Gulp-Class.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GitHubGW/Gulp-Class/issues"
+  },
+  "homepage": "https://github.com/GitHubGW/Gulp-Class#readme",
+  "scripts": {
+    "dev": "gulp dev",
+    "build": "gulp build"
+  }
+}
