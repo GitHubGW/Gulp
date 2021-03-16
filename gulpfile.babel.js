@@ -2,7 +2,7 @@
 // gulpfile.babel.js는 gulpfile.js파일인데 +babel을 추가한 gulpfile이다.
 
 // gulp 패키지를 설치 후 gulp를 사용하기 위해 import해온다.
-import gulp, { dest } from "gulp";
+import gulp from "gulp";
 
 // gulp에는 많은 플러그인들이 있는데 gulp pug는 pug template를 html로 컴파일 해주는 플러그인이다.
 // (webpack으로 치면 loaders 플러그인이라고 보면 된다.)
@@ -10,6 +10,9 @@ import gulpPug from "gulp-pug";
 
 // del은 파일을 삭제하거나 디렉토리를 삭제할 때 사용하는 모듈이다.
 import del from "del";
+
+// gulp-webserver모듈을 이용해서 로컬 서버를 생성한다.
+import ws from "gulp-webserver";
 
 const routes = {
   pug: {
@@ -48,6 +51,15 @@ const clean = () => {
   return del(["build"]);
 };
 
+// webserver함수는 로컬 서버를 생성한다.
+const webserver = () => {
+  // src()를 통해 빌드할 폴더를 지정한다. (컴파일한 파일들이 저장되는 build폴더를 지정하면 된다.)
+  // ws()를 통해 웹 서버를 생성한다. ()괄호안에는 웹 서버를 생성할 때 지정할 옵션을 넣어준다.
+  // livereload는 파일을 저장하면 자동으로 새로고침 해주는 옵션이다. livereload의 기본값은 false인데 true를 넣어줌.
+  // open은 웹 서버 생성시 브라우저 창에 로컬 서버를 열어준다. 기본값은 false이고 true를 넣어줌.
+  gulp.src("build").pipe(ws({ livereload: true, open: true }));
+};
+
 // 아래 gulp.series([clean, pug])를 보면 전혀 다른 일을 하는 두 task가 같이 묶여서 실행되고 있다.
 // 그래서 이 여러 task들을 구분해서 관리하기 위해 아래와 같이 따로 따로 변수에 할당해주었다.
 // gulp.series([clean])는 series()를 통해 최종 결과물의 위치에 가서 clean함수를 실행해주라는 의미이다.
@@ -57,6 +69,9 @@ const prepare = gulp.series([clean]);
 // gulp.series([pug])를 통해 pug태스크를 실행시켜준다. (pug함수를 동작시켜줌)
 const assets = gulp.series([pug]);
 
+// gulp.series([webserver])를 통해 웹 서버를 생성하는 태스크를 실행한다.
+const postDev = gulp.series([webserver]);
+
 // npm run dev를 통해 gulp를 실행(gulp dev)을 해주면 gulp가 실행된다.
 // 위에 만든 함수들은 package.json내에서 command(명령어)로 사용되지 않기 때문에 export가 필요없지만 아래 dev는 package.json에서 command(명령어)로 쓰고 있기 때문에 해줘야 한다. EX) dev: "gulp dev"
 // 만약 export하지 않는다면 console이나 package.json에서 사용할 수 없다.
@@ -65,4 +80,4 @@ const assets = gulp.series([pug]);
 // 이런 task들은 그룹으로 묶을 수 있고 한 task는 이미지를 최적화하고 한 task는 js파일을 압축하고,
 // 한 task는 모든 파일들을 한 폴더에 집어넣고 그 폴더를 브라우저에 출력시키는 등등 여러가지 task들을 나눌 수 있고 그 task들을 실행시킬 수 있다.
 // series함수는 Task들을 순차적으로 실행한다. gulp.series([pug, pug2, pug3])이라고 하면 pug, pug2, pug3의 task들을 순차적으로 실행해준다.
-export const dev = gulp.series([prepare, assets]);
+export const dev = gulp.series([prepare, assets, postDev]);
