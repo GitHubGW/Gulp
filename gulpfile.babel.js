@@ -2,7 +2,7 @@
 // gulpfile.babel.js는 gulpfile.js파일인데 +babel을 추가한 gulpfile이다.
 
 // gulp 패키지를 설치 후 gulp를 사용하기 위해 import해온다.
-import gulp from "gulp";
+import gulp, { parallel } from "gulp";
 
 // gulp에는 많은 플러그인들이 있는데 gulp pug는 pug template를 html로 컴파일 해주는 플러그인이다.
 // (webpack으로 치면 loaders 플러그인이라고 보면 된다.)
@@ -12,15 +12,22 @@ import gulpPug from "gulp-pug";
 import del from "del";
 
 // gulp-webserver모듈을 이용해서 로컬 서버를 생성한다.
-import ws from "gulp-webserver";
+import gulpWebserver from "gulp-webserver";
+
+import gulpImage from "gulp-image";
 
 const routes = {
   pug: {
     // 아래에서 pug파일들을 컴파일 하기전에 미리 컴파일할 파일들의 경로를 지정해준다.
     // 만약 src폴더 밑에 있는 모든 pug 파일들을 컴파일하고 싶다면 src/**/*.pug라고 지정해주면 된다.
     // (현재는 src바로 밑에 있는 모든 pug 파일들만 해당됨)
+    watch: "src/**/*.pug",
     src: "src/*.pug",
     dest: "build", // task를 실행한 후 최종 결과물을 저장할 디렉토리를 설정한다. (build폴더)
+  },
+  img: {
+    src: "src/img/*",
+    dest: "build/img",
   },
 };
 
@@ -54,23 +61,41 @@ const clean = () => {
 // webserver함수는 로컬 서버를 생성한다.
 const webserver = () => {
   // src()를 통해 빌드할 폴더를 지정한다. (컴파일한 파일들이 저장되는 build폴더를 지정하면 된다.)
-  // ws()를 통해 웹 서버를 생성한다. ()괄호안에는 웹 서버를 생성할 때 지정할 옵션을 넣어준다.
+  // gulpWebserver()를 통해 웹 서버를 생성한다. ()괄호안에는 웹 서버를 생성할 때 지정할 옵션을 넣어준다.
   // livereload는 파일을 저장하면 자동으로 새로고침 해주는 옵션이다. livereload의 기본값은 false인데 true를 넣어줌.
   // open은 웹 서버 생성시 브라우저 창에 로컬 서버를 열어준다. 기본값은 false이고 true를 넣어줌.
-  gulp.src("build").pipe(ws({ livereload: true, open: true }));
+  gulp.src("build").pipe(gulpWebserver({ livereload: true, open: true }));
+};
+
+// gulp.watch()는 지켜봐야 할 파일들을 지정하는 메소드이다.
+// 지켜봐야 할 파일들이랑 몇 가지 옵션을 인자로 태스크에 넣어주면 된다.
+const watch = () => {
+  // 우리는 어떤 pug파일에 무언가 변화가 생겼을 때 컴파일을 시켜야 하기 때문에 하나의 파일만 watch하면 안되고 모든 파일을 다 watch해야 한다.
+  // 그래서 위에 routes객체안에 watch의 값으로 "src/**/*.pug" 을 넣어줘서 src폴더 밑에 있는 모든 pug파일들을 다 watch하게 만든다.
+  // 만약 "src/*.pug"라고 하게 되면 src폴더 아래에 있는 partials나 templates폴더 안에 있는 pug파일의 변화는 watch하지 못하게 될 것이기 때문이다.
+  // gulp.watch(routes.pug.watch, pug): routes.pug.watch경로에 존재하는 파일들을 지켜보고 있다가 변화가 발생하면 pug함수를 실행시킴(컴파일 시키는 함수)
+  gulp.watch(routes.pug.watch, pug);
+};
+
+// 이미지를 최적화 시키는 img 함수를 만듬
+const img = () => {
+  // routes.img.src경로에 있는 이미지 파일들을 지정한 후 그 파일들을 gulpImage()를 통해 최적화를 해준 후 routes.img.dest 경로에 빌드한다.
+  gulp.src(routes.img.src).pipe(gulpImage()).pipe(gulp.dest(routes.img.dest));
 };
 
 // 아래 gulp.series([clean, pug])를 보면 전혀 다른 일을 하는 두 task가 같이 묶여서 실행되고 있다.
 // 그래서 이 여러 task들을 구분해서 관리하기 위해 아래와 같이 따로 따로 변수에 할당해주었다.
 // gulp.series([clean])는 series()를 통해 최종 결과물의 위치에 가서 clean함수를 실행해주라는 의미이다.
 // 여기도 마찬가지로 ()안에 [clean] 형태로 배열을 사용하는 이유는 clean태스크 뿐만 아니라 다른 여러 태스크들도 실행할 수도 있기 때문이다.
-const prepare = gulp.series([clean]);
+const prepare = gulp.parallel([clean, img]);
 
 // gulp.series([pug])를 통해 pug태스크를 실행시켜준다. (pug함수를 동작시켜줌)
 const assets = gulp.series([pug]);
 
 // gulp.series([webserver])를 통해 웹 서버를 생성하는 태스크를 실행한다.
-const postDev = gulp.series([webserver]);
+// gulp.series()안에 watch를 넣었을 때 제대로 동작하지 않아서 parallel()메소드로 변경해주었다.
+// 만약 동시에 두 가지 task를 실행하길 원한다면 series()대신 parallel를 사용하면 된다.
+const postDev = gulp.parallel([webserver, watch]);
 
 // npm run dev를 통해 gulp를 실행(gulp dev)을 해주면 gulp가 실행된다.
 // 위에 만든 함수들은 package.json내에서 command(명령어)로 사용되지 않기 때문에 export가 필요없지만 아래 dev는 package.json에서 command(명령어)로 쓰고 있기 때문에 해줘야 한다. EX) dev: "gulp dev"
