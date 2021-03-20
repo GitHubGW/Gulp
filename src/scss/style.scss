@@ -2,5 +2,26 @@
 @import "_variables";
 
 body{
-  background-color: $red;
+  background-color: $bg;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  color: white;
+  font-family: 'Dancing Script', cursive;
+}
+
+img{
+  width: 180px;
+}
+
+h1{
+  font-size: 70px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+header, footer{
+  display: none;
 }

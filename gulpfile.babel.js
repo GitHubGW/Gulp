@@ -14,9 +14,21 @@ import del from "del";
 // gulp-webserver모듈을 이용해서 로컬 서버를 생성한다.
 import gulpWebserver from "gulp-webserver";
 
+// PNG, JPEG, GIF, SVG등 각종 이미지 파일들을 최적화 시켜주는 gulp-image모듈을 가져옴
 import gulpImage from "gulp-image";
 
+// gulp를 통해 Sass(Scss)파일을 컴파일 시키려면 node-sass와 gulp-sass 패키지(모듈)가 필요하다.
+// node-sass, gulp-sass (gulp용 sass플러그인)
+// gulp-sass를 사용하기 위해 가져옴
+import sass from "gulp-sass";
+
+// 가져온 gulp-sass를 compiler로 보낸다.
+// 기본적으로 gulp-sass가 node-sass로 sass(scss)파일을 전해주는 것이다.
+sass.compiler = require("node-sass");
+
+// Task를 실행할 파일들의 디렉토리와 Task가 실행된 후 결과물을 지정할 디렉토리를 모아놓은 routes객체를 생성함
 const routes = {
+  // pug파일을 html파일로 컴파일 해주는 task
   pug: {
     // 아래에서 pug파일들을 컴파일 하기전에 미리 컴파일할 파일들의 경로를 지정해준다.
     // 만약 src폴더 밑에 있는 모든 pug 파일들을 컴파일하고 싶다면 src/**/*.pug라고 지정해주면 된다.
@@ -25,9 +37,16 @@ const routes = {
     src: "src/*.pug",
     dest: "build", // task를 실행한 후 최종 결과물을 저장할 디렉토리를 설정한다. (build폴더)
   },
+  // 이미지 파일을 압축 및 최적화 시켜주는 task
   img: {
-    src: "src/img/*",
-    dest: "build/img",
+    src: "src/img/*", // src폴더 아래 모든 파일들을 의미함(만약 png확장자만 가진 이미지를 지정하고 싶다면 *.png로 쓰면 된다.)
+    dest: "build/img", // task를 실행한 후 최종 결과물을 저장할 디렉토리: build/img
+  },
+  // sass(scss) 파일을 css파일로 컴파일 해주는 task
+  scss: {
+    watch: "src/scss/**/*.scss", // style.scss파일 외에 모든 것을 지켜보고 싶기 때문에 src/scss/**/*.scss를 통해 scss폴더 아래 모든 .scss파일들을 감시하게 한다.
+    src: "src/scss/style.scss",
+    dest: "build/css", // 원래 컴파일된 결과물을 지정하는 dest는 build/css이런 식으로 디렉토리만 적지만 단 하나의 파일만을 다룰 때는 build/css/style.css 이렇게 상세하게 적을 수도 있다.
   },
 };
 
@@ -64,7 +83,7 @@ const webserver = () => {
   // gulpWebserver()를 통해 웹 서버를 생성한다. ()괄호안에는 웹 서버를 생성할 때 지정할 옵션을 넣어준다.
   // livereload는 파일을 저장하면 자동으로 새로고침 해주는 옵션이다. livereload의 기본값은 false인데 true를 넣어줌.
   // open은 웹 서버 생성시 브라우저 창에 로컬 서버를 열어준다. 기본값은 false이고 true를 넣어줌.
-  gulp.src("build").pipe(gulpWebserver({ livereload: true, open: true }));
+  return gulp.src("build").pipe(gulpWebserver({ livereload: true, open: true }));
 };
 
 // gulp.watch()는 지켜봐야 할 파일들을 지정하는 메소드이다.
@@ -75,12 +94,26 @@ const watch = () => {
   // 만약 "src/*.pug"라고 하게 되면 src폴더 아래에 있는 partials나 templates폴더 안에 있는 pug파일의 변화는 watch하지 못하게 될 것이기 때문이다.
   // gulp.watch(routes.pug.watch, pug): routes.pug.watch경로에 존재하는 파일들을 지켜보고 있다가 변화가 발생하면 pug함수를 실행시킴(컴파일 시키는 함수)
   gulp.watch(routes.pug.watch, pug);
+
+  // gulp에게 watch()메소드를 통해 지정한 파일을 감시하도록 한다.
+  // gulp에게 src/img아래 있는 모든 파일들을 감시하도록 하고 파일의 변화가 생기면 img함수를 실행해 이미지 최적화를 실행한다.
+  gulp.watch(routes.img.src, img);
+
+  // gulp에게 watch()메소드를 src/scss아래 있는 .scss파일에 변화가 생기면 styles함수를 실행하게 한다.
+  gulp.watch(routes.scss.watch, styles);
 };
 
-// 이미지를 최적화 시키는 img 함수를 만듬
+// 이미지를 최적화 시키는 img함수를 만듬
 const img = () => {
   // routes.img.src경로에 있는 이미지 파일들을 지정한 후 그 파일들을 gulpImage()를 통해 최적화를 해준 후 routes.img.dest 경로에 빌드한다.
-  gulp.src(routes.img.src).pipe(gulpImage()).pipe(gulp.dest(routes.img.dest));
+  return gulp.src(routes.img.src).pipe(gulpImage()).pipe(gulp.dest(routes.img.dest));
+};
+
+// sass(scss)파일을 css로 컴파일 시켜주는 styles함수를 만듬
+const styles = () => {
+  // sass()를 통해 gulp-sass에서 가져온 sass()를 실행시킨다.
+  // 그리고 만약 에러가 있다면 sass.logError를 통해 에러를 출력시킨다. (sass에러는 콘솔을 죽이는 자바스크립트 같은 에러가 아니라 찾을 수 없는 속성들을 띄워주는 정도의 에러이다.)
+  return gulp.src(routes.scss.src).pipe(sass().on("error", sass.logError)).pipe(gulp.dest(routes.scss.dest));
 };
 
 // 아래 gulp.series([clean, pug])를 보면 전혀 다른 일을 하는 두 task가 같이 묶여서 실행되고 있다.
@@ -89,13 +122,13 @@ const img = () => {
 // 여기도 마찬가지로 ()안에 [clean] 형태로 배열을 사용하는 이유는 clean태스크 뿐만 아니라 다른 여러 태스크들도 실행할 수도 있기 때문이다.
 const prepare = gulp.parallel([clean, img]);
 
-// gulp.series([pug])를 통해 pug태스크를 실행시켜준다. (pug함수를 동작시켜줌)
-const assets = gulp.series([pug]);
+// gulp.series([pug, styles])를 통해 pug와 styles 태스크(함수)를 실행시켜준다.
+const assets = gulp.series([pug, styles]);
 
 // gulp.series([webserver])를 통해 웹 서버를 생성하는 태스크를 실행한다.
-// gulp.series()안에 watch를 넣었을 때 제대로 동작하지 않아서 parallel()메소드로 변경해주었다.
-// 만약 동시에 두 가지 task를 실행하길 원한다면 series()대신 parallel를 사용하면 된다.
-const postDev = gulp.parallel([webserver, watch]);
+// gulp.series()안에 watch를 넣었을 때 제대로 동작하지 않으면 parallel()메소드로 바꿔서 해보기
+// 만약 여러 task들을 동시에 실행되길 원한다면 series()대신 parallel()메소드를 사용하면 된다.
+const postDev = gulp.series([webserver, watch]);
 
 // npm run dev를 통해 gulp를 실행(gulp dev)을 해주면 gulp가 실행된다.
 // 위에 만든 함수들은 package.json내에서 command(명령어)로 사용되지 않기 때문에 export가 필요없지만 아래 dev는 package.json에서 command(명령어)로 쓰고 있기 때문에 해줘야 한다. EX) dev: "gulp dev"
