@@ -27,17 +27,21 @@ Most new versions of node support most features that Babel provides, except the 
 
 Node already supports a lot of ES2015+ features, but to avoid compatibility problems we suggest to install Babel and rename your ```gulpfile.js``` to ```gulpfile.babel.js```.
 
-<pre><code>npm install --save-dev @babel/register @babel/core @babel/preset-env</code></pre>
+```javascript
+npm install --save-dev @babel/register @babel/core @babel/preset-env
+```
 
 Then create a .babelrc file with the preset configuration.
-<pre><code>{
+
+```javascript
+{
   "presets": [ "@babel/preset-env" ]
 }
-</code></pre>
+```
 
 And here's the same sample from above written in ES2015+.
 
-```
+```javascript
 
 import gulp from 'gulp';
 import less from 'gulp-less';
