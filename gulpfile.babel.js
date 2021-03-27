@@ -189,10 +189,16 @@ const postDev = gulp.series([webserver, watch]);
 // 이런 task들은 그룹으로 묶을 수 있고 한 task는 이미지를 최적화하고 한 task는 js파일을 압축하고,
 // 한 task는 모든 파일들을 한 폴더에 집어넣고 그 폴더를 브라우저에 출력시키는 등등 여러가지 task들을 나눌 수 있고 그 task들을 실행시킬 수 있다.
 // series함수는 Task들을 순차적으로 실행한다. gulp.series([pug, pug2, pug3])이라고 하면 pug, pug2, pug3의 task들을 순차적으로 실행해준다.
-export const dev = gulp.series([prepare, assets, postDev]);
+// export const dev = gulp.series([prepare, assets, postDev]);
 
-// build는 prepare와 assets함수를 불러와서 차례대로 실행한다.ㄴ
-export const build = gulp.series([prepare, assets]);
+// build는 prepare와 assets함수를 불러와서 차례대로 실행한다.
+// export const build = gulp.series([prepare, assets]);
 
 // 위에서 만든 build함수를 실행하고
+// export const deploy = gulp.series([build, ghDeploy]);
+
+// 위의 코드를 아래와 같이 쓸 수도 있다.
+// prepare와 assets 태스크를 실행시키는 것을 build변수에 담고 dev에서 build를 실행시켜주면 prepare, assetss을 실행시키는 것과 같다.
+export const build = gulp.series([prepare, assets]);
+export const dev = gulp.series([build, postDev]);
 export const deploy = gulp.series([build, ghDeploy]);
