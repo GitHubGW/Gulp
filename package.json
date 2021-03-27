@@ -2,7 +2,14 @@
   "name": "gulp-class",
   "version": "1.0.0",
   "description": "",
-  "dependencies": {},
+  "dependencies": {
+    "babelify": "^10.0.0",
+    "gulp-autoprefixer": "^7.0.1",
+    "gulp-bro": "^2.0.0",
+    "gulp-csso": "^4.0.1",
+    "gulp-gh-pages": "^0.5.4",
+    "uglifyify": "^5.0.2"
+  },
   "devDependencies": {
     "@babel/core": "^7.13.10",
     "@babel/preset-env": "^7.13.10",
@@ -28,6 +35,10 @@
   "homepage": "https://github.com/GitHubGW/Gulp-Class#readme",
   "scripts": {
     "dev": "gulp dev",
-    "build": "gulp build"
-  }
+    "build": "gulp build",
+    "deploy": "gulp deploy"
+  },
+  "browserslist": [
+    "last 2 versions"
+  ]
 }
