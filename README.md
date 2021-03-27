@@ -18,9 +18,9 @@
 - [x] Pug
 - [x] SCSS
 - [x] Image Optimization
-- [ ] Live Reload
-- [ ] Github Pages
-- [ ] Babel
+- [x] Live Reload
+- [x] Github Pages
+- [x] Babel
 
 
 ## What is gulp?
