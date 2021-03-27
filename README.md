@@ -1,4 +1,4 @@
-# Gulp-Class
+# Gulp
 
 ## 🔗 Demo
 
