@@ -15,6 +15,7 @@
     "@babel/preset-env": "^7.13.10",
     "@babel/register": "^7.13.8",
     "del": "^6.0.0",
+    "gift": "^0.10.2",
     "gulp": "^4.0.2",
     "gulp-cli": "^2.3.0",
     "gulp-image": "^6.2.1",
@@ -27,7 +28,7 @@
     "type": "git",
     "url": "git+https://github.com/GitHubGW/Gulp-Class.git"
   },
-  "author": "",
+  "author": "GW",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/GitHubGW/Gulp-Class/issues"

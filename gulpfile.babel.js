@@ -2,7 +2,7 @@
 // gulpfile.babel.js는 gulpfile.js파일인데 +babel을 추가한 gulpfile이다.
 
 // gulp 패키지를 설치 후 gulp를 사용하기 위해 import해온다.
-import gulp, { parallel } from "gulp";
+import gulp from "gulp";
 
 // gulp에는 많은 플러그인들이 있는데 gulp pug는 pug template를 html로 컴파일 해주는 플러그인이다.
 // (webpack으로 치면 loaders 플러그인이라고 보면 된다.)
@@ -66,6 +66,7 @@ const routes = {
     src: "src/scss/style.scss",
     dest: "build/css", // 원래 컴파일된 결과물을 지정하는 dest는 build/css이런 식으로 디렉토리만 적지만 단 하나의 파일만을 다룰 때는 build/css/style.css 이렇게 상세하게 적을 수도 있다.
   },
+  // 최신 JS구문을 오래된 JS구문으로 바꿔주는 task
   js: {
     watch: "src/js/**/*.js",
     src: "src/js/main.js",
@@ -141,6 +142,9 @@ const js = () => {
 };
 
 // 깃허브 페이지에 지금까지 빌드한 파일들을 배포해주는 ghDeploy함수를 만듦
+// 이 프로젝트는 npm으로 패키지들을 설치하면 배포과정에서 문제가 발생하는 거 같음. (yarn으로 install하고 진행하기!)
+// 주의! 만약 Deploy과정에서 Cannot read property '0' of null 오류가 난다면 node_modules폴더와 package-lock.json파일을 모두 다 지우고 재설치하고
+// node_modules/gulp-gh-pages/node_modules안에 있는 gift폴더를 지우고 배포를 실행해보기. 아니면 지우고 yarn install gift로 gift를 재설치해보고 실행해보기
 const ghDeploy = () => {
   // 지금까지 빌드한 파일들을 배포할 것이기 때문에 src가 아니라 build폴더 아래 있는 모든 파일들을 지정한다.
   // ghPages()함수를 실행해
@@ -194,7 +198,7 @@ const postDev = gulp.series([webserver, watch]);
 // build는 prepare와 assets함수를 불러와서 차례대로 실행한다.
 // export const build = gulp.series([prepare, assets]);
 
-// 위에서 만든 build함수를 실행하고
+// 위에서 만든 build함수를 실행하고 ghDeploy함수를 실행해서 최종적으로 깃허브에 배포를 한다.
 // export const deploy = gulp.series([build, ghDeploy]);
 
 // 위의 코드를 아래와 같이 쓸 수도 있다.
