@@ -201,7 +201,8 @@ const postDev = gulp.series([webserver, watch]);
 // export const build = gulp.series([prepare, assets]);
 
 // 위에서 만든 build함수를 실행하고 ghDeploy함수를 실행해서 최종적으로 깃허브에 배포를 한다.
-// export const deploy = gulp.series([build, ghDeploy]);
+// 마지막에 clean함수를 통해서 배포가 끝난 후에는 .public폴더와 build폴더를 삭제해준다.
+// export const deploy = gulp.series([build, ghDeploy, clean]);
 
 // 위의 코드를 아래와 같이 쓸 수도 있다.
 // prepare와 assets 태스크를 실행시키는 것을 build변수에 담고 dev에서 build를 실행시켜주면 prepare, assetss을 실행시키는 것과 같다.
