@@ -3,6 +3,9 @@
 ## 🔗 Demo
 https://githubgw.github.io/Gulp
 
+## 🖥 Preview
+<img src="gulp-preview.png" />
+
 ## 🔥 Stack
 ### Front-end
 <img height="30" src="https://img.shields.io/badge/Gulp-CF4647?style=for-the-badge&logo=Gulp&logoColor=white"/> <img height="30" src="https://img.shields.io/badge/Pug-A86454?style=for-the-badge&logo=Pug&logoColor=white"/>
