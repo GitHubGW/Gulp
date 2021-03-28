@@ -1,6 +1,7 @@
 # Gulp
 
 ## 🔗 Demo
+https://githubgw.github.io/Gulp
 
 ## 🔥 Stack
 ### Front-end
@@ -10,18 +11,19 @@
 ## ✅ Packages
 - [x] Gulp
 - [x] Pug
+- [x] SCSS
 - [x] Autoprefixer
 - [x] Browserify
-- [x] SCSS
+- [x] Babelify
+- [x] Uglifyify
 
 ## ✨ Automating
-- [x] Pug
-- [x] SCSS
+- [x] Compile the Pug to HTML
+- [x] Compile SCSS to CSS
 - [x] Image Optimization
 - [x] Live Reload
-- [x] Github Pages
-- [x] Babel
-
+- [x] Using Babel
+- [x] Deploy Github Pages
 
 ## What is gulp?
 * Automation - gulp is a toolkit that helps you automate painful or time-consuming tasks in your development workflow.
