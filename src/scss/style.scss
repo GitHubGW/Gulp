@@ -9,17 +9,38 @@ body{
   flex-direction: column;
   height: 100vh;
   color: white;
-  font-family: 'Dancing Script', cursive;
+  font-family: 'Poppins', sans-serif;
 }
 
-img{
-  width: 130px;
+main{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.gulp-image{
+  display: flex;
+  justify-content: center;
+}
+.gulp-image img{
+  width: 85px;
+}
+
+.images{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin:20px 0;
+}
+
+.images img{
+  width: 63px;
+  margin:0 7px;
 }
 
 h1{
-  font-size: 55px;
-  margin-top: 15px;
-  margin-bottom: 15px;
+  font-size: 18px;
+  text-align: center;
 }
 
 header, footer{
