@@ -98,7 +98,9 @@ const pug = () => {
 const clean = () => {
   // del()함수는 ()안에 삭제할 확장자 파일이나 폴더 이름을 적어주면 된다. (우리는 build폴더를 삭제할 것이기 때문에 build를 써준다.)
   // ()안에 ["build"] 형태로 배열을 사용하는 이유는 build폴더 하나만이 아니라 여러 개를 삭제할 수도 있기 때문이다.
-  return del(["build"]);
+  // ghDeploy함수를 실행해서 배포를 하는 과정에서 .public이라는 폴더가 생기고 그 안에 일종의 백업용 파일들이 저장되게 된다.
+  // 하지만 우리는 .public파일이 필요하지 않기 때문에 clean함수 안에서 제거해준다.
+  return del(["build", ".public"]);
 };
 
 // webserver함수는 로컬 서버를 생성한다.
@@ -205,4 +207,4 @@ const postDev = gulp.series([webserver, watch]);
 // prepare와 assets 태스크를 실행시키는 것을 build변수에 담고 dev에서 build를 실행시켜주면 prepare, assetss을 실행시키는 것과 같다.
 export const build = gulp.series([prepare, assets]);
 export const dev = gulp.series([build, postDev]);
-export const deploy = gulp.series([build, ghDeploy]);
+export const deploy = gulp.series([build, ghDeploy, clean]);
