@@ -4,7 +4,7 @@
 https://githubgw.github.io/Gulp
 
 ## 🖥 Preview
-<img src="gulp-preview.png" />
+<img src="preview.png" />
 
 ## 🔥 Stack
 ### Front-end
