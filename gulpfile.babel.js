@@ -138,9 +138,11 @@ const styles = () => {
 // js함수는 js파일을 컴파일 시켜는 함수이다.
 const js = () => {
   // bro()의 인자에 다양한 옵션을 지정해줄 수 있다.
+  // bro()함수 안에서 babelify모듈에 configure()함수를 통해 babel의 presets에 대한 설정을 해줄 수 있다.
+  // 또한 uglifyify를 통해 uglifyify모듈을 사용하도록 설정할 수 있다.
   // transform 프로퍼티에 babelify.configure()를 통해 babelify의 presets를 현재 이 프로젝트에 맞는 @babel-preset-env로 바꿔준다.
   // babelify를 이용하면 바벨의 다양한 옵션을 설정할 수 있다. (babelify에 다른 presets들을 추가해줄 수도 있다.)
-  // 그리고 uglifyify옵션을 통해 긴 코드를 짧게 압축시켜줄 수 있다. (uglifyify는 npm install uglifyify로 설치 필요)
+  // 그리고 uglifyify 모듈을 통해 긴 코드를 짧게 줄여서 압축시켜줄 수 있다. (uglifyify는 npm install uglifyify로 설치 필요)
   return gulp
     .src(routes.js.src)
     .pipe(bro({ transform: [babelify.configure({ presets: ["@babel/preset-env"] }), ["uglifyify", { global: true }]] }))
@@ -183,6 +185,7 @@ const watch = () => {
 // 그래서 이 여러 task들을 구분해서 관리하기 위해 아래와 같이 따로 따로 변수에 할당해주었다.
 // const prepare = gulp.parallel([clean, img]), const assets = gulp.series([pug, styles, js]), const postDev = gulp.series([webserver, watch]);
 // 위와 마찬가지로 여기서도 ()괄호안에 [clean] 형태로 배열을 사용하는 이유는 clean태스크 뿐만 아니라 다른 여러 태스크들도 실행할 수도 있기 때문이다.
+// 주의! 꼭 [clean, img] 이렇게 배열 형태로 사용하지 않아도 되는 거 같다. 그냥 clean, img로 해도 실행되는 것 같다.
 // parallel함수는 series와 다르게 [clean, img] clean과 img함수를 순차적으로 실행하는 것이 아닌 동시에 실행한다.
 const prepare = gulp.parallel([clean, img]);
 
