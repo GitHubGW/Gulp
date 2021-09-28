@@ -1,7 +1,7 @@
 # Gulp
 
 ## 🔗 Demo
-https://githubgw.github.io/Gulp
+https://githubgw.github.io/gulp
 
 ## 🖥 Preview
 <img src="preview.png" />
